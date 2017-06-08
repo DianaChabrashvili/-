@@ -1,11 +1,12 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System.ComponentModel;
+
 
 namespace WpfApplication1
 {
@@ -61,7 +62,25 @@ namespace WpfApplication1
         {
             //  throw new NotImplementedException(v);
         }
-
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public void DoPropertyChanged(String name)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(name));
+            }
+        }
+        public static void PushLine(int isbn, string namebook, string avtor, int nameyear, int tiraj, int IDizd)
+        {
+            using (SqlConnection cn = new SqlConnection ("Server = COMP\\SQLEXPRESS ; Database = myDataBase; Trusted_Connection = True;"))
+            {
+                cn.Open();
+                string sql = string.Format("INSERT INTO Books(isbn, namebook, avtor, nameyear, tiraj, IDizd, ) values('{0}','{1}','{2}','{3}','{4}','{5}')", isbn, namebook, avtor, nameyear, tiraj, IDizd);
+                SqlCommand cmd = new SqlCommand(sql, cn);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
     }
 }
